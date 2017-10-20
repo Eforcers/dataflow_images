@@ -1,0 +1,26 @@
+Metadata-Version: 1.1
+Name: proto-google-cloud-pubsub-v1
+Version: 0.15.4
+Summary: GRPC library for the Google Cloud Pub/Sub API
+Home-page: https://github.com/googleapis/googleapis
+Author: Google Inc
+Author-email: googleapis-packages@google.com
+License: Apache-2.0
+Description: gRPC library for Google Cloud Pub/Sub API
+        
+        proto-google-cloud-pubsub-v1 is the IDL-derived library for the pubsub (v1) service in the googleapis_ repository.
+        
+        .. _`googleapis`: https://github.com/googleapis/googleapis/tree/master/google/pubsub/v1
+        
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: Implementation :: CPython

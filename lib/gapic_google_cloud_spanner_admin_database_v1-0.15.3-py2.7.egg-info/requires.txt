@@ -1,0 +1,5 @@
+google-gax>=0.15.7, <0.16dev
+oauth2client>=2.0.0, <4.0dev
+proto-google-cloud-spanner-admin-database-v1[grpc]>=0.15.3, <0.16dev
+googleapis-common-protos[grpc]>=1.5.2, <2.0dev
+grpc-google-iam-v1>=0.11.1, <0.12dev

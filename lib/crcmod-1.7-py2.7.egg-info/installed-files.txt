@@ -1,0 +1,16 @@
+../crcmod/__init__.py
+../crcmod/_crcfunpy.py
+../crcmod/crcmod.py
+../crcmod/predefined.py
+../crcmod/test.py
+../crcmod/__init__.pyc
+../crcmod/_crcfunpy.pyc
+../crcmod/crcmod.pyc
+../crcmod/predefined.pyc
+../crcmod/test.pyc
+../crcmod/_crcfunext.so
+.
+dependency_links.txt
+PKG-INFO
+SOURCES.txt
+top_level.txt
