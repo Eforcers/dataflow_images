@@ -18,6 +18,7 @@ import unittest
 
 import six
 
+from tenacity import async
 from tenacity import retry
 from tenacity.tests.test_tenacity import NoIOErrorAfterCount
 
@@ -47,6 +48,9 @@ class TestAsync(unittest.TestCase):
         thing = NoIOErrorAfterCount(5)
         yield from _retryable_coroutine(thing)
         assert thing.counter == thing.count
+
+    def test_repr(self):
+        repr(async.AsyncRetrying())
 
 
 if __name__ == '__main__':

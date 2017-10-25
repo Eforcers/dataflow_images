@@ -1,1 +1,3 @@
 google-cloud
+pillow
+psycopg2
