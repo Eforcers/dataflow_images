@@ -27,6 +27,10 @@ class BucketToReadOptions(PipelineOptions):
             '--output',
             default='gs://cp001/salida.txt',
             help='Output file to write results to.')
+        parser.add_argument('db_host')
+        parser.add_argument('db_user')
+        parser.add_argument('db_password')
+        parser.add_argument('db')
 
 
 def list_files(bucket):
@@ -44,49 +48,56 @@ class GetData(beam.DoFn):
     def __init__(self, bucket_param):
         super(GetData, self).__init__()
         self.bucket_param = bucket_param
+        self.conn = None
+        self.gcs_client = None
 
-    def process(self, file_name, *args, **kwargs):
-        from google.cloud import storage
-        import StringIO
-        from PIL import Image, ExifTags
-        import psycopg2
+    def _create_connection(self):
+        import pg8000 as DBAPI
         import logging
 
+        logging.info("conecting with db")
+        self.conn = DBAPI.connect(host="35.196.223.204", user="eforcers", password="Ove52SWE", database="test")
+
+    def insert_test(self, key_, value_):
+        import logging
+        try:
+            if self.conn is None:
+                self._create_connection()
+
+            sql = "insert into test(key_, value_) values(%s, %s)"
+            cursor = self.conn.cursor()
+            cursor.execute(sql, (key_, value_))
+            self.conn.commit()
+            cursor.close()
+        except:
+            logging.exception("error insert item")
+
+    def _get_cloud_storage_bucket(self):
+        from google.cloud import storage
         gcs_client = storage.Client()
         bucket_name = self.bucket_param.get()
-        bucket = gcs_client.get_bucket(bucket_name)
-        blob = bucket.blob(file_name)
+        return gcs_client.get_bucket(bucket_name)
 
+    def get_tag(self, file_name):
+        import StringIO
+        from PIL import Image, ExifTags
+
+        bucket = self._get_cloud_storage_bucket()
+        blob = bucket.blob(file_name)
         string_buffer = StringIO.StringIO()
         blob.download_to_file(string_buffer)
         img = Image.open(string_buffer)
-
         tags = img._getexif()
 
-        conn_string = "host='35.196.223.204' dbname='test' " \
-                      "user='eforcers' password='Ove52SWE'"
+        return {ExifTags.TAGS[k]: v for k, v in tags.items if k in ExifTags.TAGS}
 
-        logging.info("Connecting to database\n	->%s", conn_string)
+    def process(self, file_name, *args, **kwargs):
+        tags = self.get_tag(file_name)
 
-        try:
-            conn = psycopg2.connect(conn_string)
-        except Exception as ex:
-            logging.exception("error connecting with db")
-
-        cursor = conn.cursor()
-        sql = "insert into test(key_, value_) values(%s, %s)"
-        ex = {}
         for k, v in tags.items():
-            if k in ExifTags.TAGS:
-                try:
-                    cursor.execute(sql, (ExifTags.TAGS[k], v))
-                    conn.commit()
-                    ex[ExifTags.TAGS[k]] = v
-                except Exception as e:
-                    logging.exception("error sending info to db ")
-        cursor.close()
+            self.insert_test(k, v)
 
-        return [ex]
+        return ["ok"]
 
 
 def run(argv):
@@ -96,7 +107,7 @@ def run(argv):
 
     pipeline | 'start bucket' >> beam.Create([bucket_to_read_options.bucket_to_list]) | \
         'list files from bucket' >> beam.ParDo(list_files) | \
-        'add prefix' >> beam.ParDo(GetData(bucket_to_read_options.bucket_to_list)) | \
+        'add save tags in DB' >> beam.ParDo(GetData(bucket_to_read_options.bucket_to_list)) | \
         'save name files ' >> beam.io.WriteToText(bucket_to_read_options.output)
 
     pipeline.run()
