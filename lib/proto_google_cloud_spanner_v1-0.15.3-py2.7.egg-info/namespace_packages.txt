@@ -1,4 +1,0 @@
-google.cloud.proto.spanner
-google.cloud.proto
-google.cloud
-google

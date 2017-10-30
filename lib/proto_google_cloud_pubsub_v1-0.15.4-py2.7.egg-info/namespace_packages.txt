@@ -1,4 +1,0 @@
-google.cloud.proto.pubsub
-google.cloud.proto
-google.cloud
-google

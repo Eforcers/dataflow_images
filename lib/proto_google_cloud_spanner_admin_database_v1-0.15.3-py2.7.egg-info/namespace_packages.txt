@@ -1,6 +1,0 @@
-google.cloud.proto.spanner.admin.database
-google.cloud.proto.spanner.admin
-google.cloud.proto.spanner
-google.cloud.proto
-google.cloud
-google

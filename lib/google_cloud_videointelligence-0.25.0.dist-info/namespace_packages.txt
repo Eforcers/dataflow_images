@@ -1,6 +1,0 @@
-google
-google.cloud
-google.cloud.gapic
-google.cloud.gapic.videointelligence
-google.cloud.proto
-google.cloud.proto.videointelligence
