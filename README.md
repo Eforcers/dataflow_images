@@ -38,13 +38,12 @@ datos postgresql.
      * --db_user [user host]
      * --db_password [Password Host]
      * --db_name [database name]
-     * --bucket_to_list <bucket to list
-     * --output <file where output will be> 
+     * --bucket_to_list <bucket to list 
      
    Un ejemplo de ejecución seria el siguiente
 
    ```
-   python main.py  --runner DirectRunner --db_host 127.0.0.1 --db_user user_test --db_password qwerty1234 --db_name test_db  --bucket_to_list bucket_1 --output gs://bucket_2:/output.txt 
+   python main.py  --runner DirectRunner --db_host 127.0.0.1 --db_user user_test --db_password qwerty1234 --db_name test_db  --bucket_to_list bucket_1 
    ```
 
 Despues de la ejecución verifique en la base de datos el resultado
@@ -65,12 +64,11 @@ Para ejecutar el pipeline en Google dataflow hay que realizar los siguientes pas
      * --db_password <Password Host>
      * --db_name <database name>
      * --bucket_to_list <bucket to list>
-     * --output <file where output will be>
      * --requirements_file requirements.txt
 
 
    ```
-   python main.py  --runner DataflowRunner --project projectId --job_name myjob01 --staging_location gs://bucket1/staging --temp_location gs://bucket1/temp --requirements_file requirements.txt --db_host db_host --db_user user_db --db_password user_password --db_name db_test --bucket_to_list bucket2 --output gs://bucket1/salida.txt
+   python main.py  --runner DataflowRunner --project projectId --job_name myjob01 --staging_location gs://bucket1/staging --temp_location gs://bucket1/temp --requirements_file requirements.txt --db_host db_host --db_user user_db --db_password user_password --db_name db_test --bucket_to_list bucket2 
    ```
 3. Despues de la ejecución verifique si esta ejecutando en Google Cloud Platform
 

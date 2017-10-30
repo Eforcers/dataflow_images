@@ -1,0 +1,29 @@
+{
+  "name": "DataflowImages",
+  "description": "",
+  "parameters": [{
+    "name": "bucket_to_list",
+    "label": "Nombre del bucket donde estan las imagenes para obtener los tags",
+    "is_optional": false
+  },
+  {
+    "name": "db_user",
+    "label": "usuario de la base de datos",
+    "is_optional": false
+  },
+  {
+    "name": "db_password",
+    "label": "contraseña del usuario de la base de datos",
+    "is_optional": false
+  },
+  {
+    "name": "db_name",
+    "label": "nombre de la base de datos",
+    "is_optional": false
+  },
+  {
+    "name": "db_host",
+    "label": "host de la base de datos",
+    "is_optional": false
+  }]
+}

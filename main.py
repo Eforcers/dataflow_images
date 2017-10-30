@@ -14,7 +14,6 @@ from apache_beam.options.pipeline_options import PipelineOptions
 # --db_password <Password Host>
 # --db_name <database name>
 # --bucket_to_list <bucket to list>
-# --output <file where output will be>
 # --requirements_file requirements.txt
 # --template_location gs://[YOUR_BUCKET_NAME]/templates/mytemplate
 
@@ -25,12 +24,11 @@ class BucketToReadOptions(PipelineOptions):
 
     @classmethod
     def _add_argparse_args(cls, parser):
-        parser.add_argument('--bucket_to_list')
-        parser.add_argument('--output')
-        parser.add_argument('--db_host')
-        parser.add_argument('--db_user')
-        parser.add_argument('--db_password')
-        parser.add_argument('--db_name')
+        parser.add_value_provider_argument('--bucket_to_list')
+        parser.add_value_provider_argument('--db_host')
+        parser.add_value_provider_argument('--db_user')
+        parser.add_value_provider_argument('--db_password')
+        parser.add_value_provider_argument('--db_name')
 
 """
 funcion de listado de archivos en el bucket
@@ -40,7 +38,7 @@ def list_files(bucket):
 
     service = googleapiclient.discovery.build('storage', 'v1')
     files = [file.get('name') for file in service.objects().list(
-        bucket=bucket).execute().get("items", [])]
+        bucket=bucket.get()).execute().get("items", [])]
 
     return files
 
@@ -61,10 +59,10 @@ class GetData(beam.DoFn):
 
         logging.info("conecting with db")
         self.conn = DBAPI.connect(
-            host=self.params.db_host,
-            user=self.params.db_user,
-            password=self.params.db_password,
-            database=self.params.db_name
+            host=self.params.db_host.get(),
+            user=self.params.db_user.get(),
+            password=self.params.db_password.get(),
+            database=self.params.db_name.get()
         )
 
     def insert_test(self, key_, value_):
@@ -84,7 +82,7 @@ class GetData(beam.DoFn):
     def _get_cloud_storage_bucket(self):
         from google.cloud import storage
         gcs_client = storage.Client()
-        bucket_name = self.params.bucket_to_list
+        bucket_name = self.params.bucket_to_list.get()
         return gcs_client.get_bucket(bucket_name)
 
     def get_tag(self, file_name):
@@ -121,8 +119,7 @@ def run(argv):
 
     pipeline | 'start bucket' >> beam.Create([bucket_to_read_options.bucket_to_list]) | \
         'list files from bucket' >> beam.ParDo(list_files) | \
-        'add save tags in DB' >> beam.ParDo(GetData(bucket_to_read_options)) | \
-        'save name files ' >> beam.io.WriteToText(bucket_to_read_options.output)
+        'add save tags in DB' >> beam.ParDo(GetData(bucket_to_read_options))
 
     pipeline.run()
 
